@@ -8,7 +8,7 @@ Copy this folder into your Codex skills directory:
 
 ```bash
 mkdir -p "$CODEX_HOME/skills"
-cp -R ./skills/wechat-markdown-draft "$CODEX_HOME/skills/wechat-markdown-draft"
+cp -R ./ "$CODEX_HOME/skills/wechat-markdown-draft" # cp current repo to your skills folder
 ```
 
 If you already keep skills in another managed location, make sure the final folder name is exactly:
