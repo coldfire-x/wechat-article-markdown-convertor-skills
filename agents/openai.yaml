@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeChat Article Draft"
+  short_description: "Convert Markdown and push WeChat drafts"
+  default_prompt: "Use $wechat-markdown-draft to convert Markdown into WeChat article HTML and create a draft via the official API."

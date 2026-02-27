@@ -1,0 +1,8 @@
+{
+  "preset": "modern",
+  "rootStyle": "font-size:16px;line-height:1.8;color:#1f2937;word-wrap:break-word;font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",sans-serif;",
+  "tagStyles": {
+    "h2": "font-size:1.25em;font-weight:700;margin:1.4em 6px 0.7em;color:#0f766e;line-height:1.3;",
+    "blockquote": "display:block;margin:1em 6px;padding:0.8em 1em;border-left:4px solid #0f766e;background:#f0fdfa;color:#134e4a;"
+  }
+}
