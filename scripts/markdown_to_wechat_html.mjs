@@ -265,12 +265,38 @@ function isOrderedListItem(line) {
 function isBlockStart(line) {
   return (
     /^#{1,6}\s+/.test(line) ||
-    /^```/.test(line) ||
+    /^\s*(?:`{3,}|~{3,})/.test(line) ||
     /^\s*>\s?/.test(line) ||
     isUnorderedListItem(line) ||
     isOrderedListItem(line) ||
     /^(\*\s*\*\s*\*|-{3,}|_{3,})\s*$/.test(line)
   );
+}
+
+function parseFenceOpening(line) {
+  const match = String(line ?? '').match(/^\s*([`~]{3,})(.*)$/);
+  if (!match) {
+    return null;
+  }
+  const marker = match[1];
+  const markerChar = marker[0];
+  const markerLength = marker.length;
+  const infoString = String(match[2] ?? '').trim();
+  const language = infoString.split(/\s+/).filter(Boolean)[0] ?? '';
+  return {
+    markerChar,
+    markerLength,
+    language,
+  };
+}
+
+function isFenceClosing(line, fence) {
+  const match = String(line ?? '').match(/^\s*([`~]{3,})\s*$/);
+  if (!match || !fence) {
+    return false;
+  }
+  const marker = match[1];
+  return marker[0] === fence.markerChar && marker.length >= fence.markerLength;
 }
 
 function parseTableLine(line) {
@@ -302,11 +328,12 @@ function basicMarkdownToHtml(markdown) {
       continue;
     }
 
-    if (/^```/.test(line)) {
-      const lang = line.slice(3).trim();
+    const fence = parseFenceOpening(line);
+    if (fence) {
+      const lang = fence.language;
       const codeLines = [];
       i += 1;
-      while (i < lines.length && !/^```/.test(lines[i])) {
+      while (i < lines.length && !isFenceClosing(lines[i], fence)) {
         codeLines.push(lines[i]);
         i += 1;
       }
@@ -595,13 +622,44 @@ function normalizeHtmlSpacing(html) {
     .trim();
 }
 
+function preserveIndentation(line) {
+  const expandedTabs = String(line ?? '').replace(/\t/g, '    ');
+  const leadingSpaces = expandedTabs.match(/^ +/)?.[0] ?? '';
+  if (!leadingSpaces) {
+    return expandedTabs;
+  }
+  const leading = leadingSpaces.replace(/ /g, '&nbsp;');
+  return `${leading}${expandedTabs.slice(leadingSpaces.length)}`;
+}
+
+function normalizeCodeBlocksForWechat(html) {
+  return String(html ?? '').replace(
+    /<pre\b([^>]*)>\s*<code\b([^>]*)>([\s\S]*?)<\/code>\s*<\/pre>/gi,
+    (fullMatch, preAttrs, codeAttrs, rawCode) => {
+      const codeText = String(rawCode ?? '');
+      if (!codeText) {
+        return fullMatch;
+      }
+      if (/<br\s*\/?>/i.test(codeText)) {
+        return fullMatch;
+      }
+
+      const normalized = codeText.replace(/\r\n?/g, '\n');
+      const lines = normalized.split('\n').map((line) => preserveIndentation(line));
+      const withLineBreaks = lines.join('<br>');
+      return `<pre${preAttrs}><code${codeAttrs}>${withLineBreaks}</code></pre>`;
+    }
+  );
+}
+
 function transformHtmlForWechat(html, styleConfig) {
   const cleaned = stripDisallowedBlocks(html);
   const rewritten = cleaned.replace(
     /<\s*\/?\s*([a-zA-Z0-9:_-]+)([^>]*)>/g,
     (full, tagName, attrs) => transformTag(full, tagName, attrs, styleConfig)
   );
-  return normalizeHtmlSpacing(rewritten);
+  const normalizedCodeBlocks = normalizeCodeBlocksForWechat(rewritten);
+  return normalizeHtmlSpacing(normalizedCodeBlocks);
 }
 
 export function extractImageSources(html) {
