@@ -193,8 +193,21 @@ function escapeAttr(value) {
   return escapeHtml(value).replaceAll('\n', ' ');
 }
 
+function applyInlineTextStyles(escapedText) {
+  return String(escapedText ?? '')
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/__([^_\n]+)__/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+    .replace(/_([^_\n]+)_/g, '<em>$1</em>')
+    .replace(
+      /~~([^~\n]+)~~/g,
+      '<span style="text-decoration:line-through;">$1</span>'
+    );
+}
+
 function renderInline(text) {
   const codeTokens = [];
+  const htmlTokens = [];
   let working = String(text ?? '');
 
   working = working.replace(/`([^`\n]+)`/g, (_, code) => {
@@ -202,33 +215,36 @@ function renderInline(text) {
     return `@@CODEPLACEHOLDER${index}@@`;
   });
 
+  working = working.replace(
+    /!\[([^\]]*)\]\(([^)\s]+)(?:\s+(?:"([^"]+)"|'([^']+)'))?\)/g,
+    (_, alt, src, titleDouble, titleSingle) => {
+      const title = titleDouble ?? titleSingle;
+      const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
+      const html = `<img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}"${titleAttr}>`;
+      const index = htmlTokens.push(html) - 1;
+      return `@@HTMLPLACEHOLDER${index}@@`;
+    }
+  );
+
+  working = working.replace(
+    /\[([^\]]+)\]\(([^)\s]+)(?:\s+(?:"([^"]+)"|'([^']+)'))?\)/g,
+    (_, label, href, titleDouble, titleSingle) => {
+      const title = titleDouble ?? titleSingle;
+      const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
+      const labelHtml = applyInlineTextStyles(escapeHtml(label));
+      const html = `<a href="${escapeAttr(href)}"${titleAttr}>${labelHtml}</a>`;
+      const index = htmlTokens.push(html) - 1;
+      return `@@HTMLPLACEHOLDER${index}@@`;
+    }
+  );
+
   working = escapeHtml(working);
+  working = applyInlineTextStyles(working);
 
-  working = working.replace(
-    /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g,
-    (_, alt, src, title) => {
-      const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
-      return `<img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}"${titleAttr}>`;
-    }
-  );
-
-  working = working.replace(
-    /\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g,
-    (_, label, href, title) => {
-      const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
-      return `<a href="${escapeAttr(href)}"${titleAttr}>${label}</a>`;
-    }
-  );
-
-  working = working
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/__([^_]+)__/g, '<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    .replace(/_([^_]+)_/g, '<em>$1</em>')
-    .replace(
-      /~~([^~]+)~~/g,
-      '<span style="text-decoration:line-through;">$1</span>'
-    );
+  working = working.replace(/@@HTMLPLACEHOLDER(\d+)@@/g, (_, indexText) => {
+    const index = Number(indexText);
+    return htmlTokens[index] ?? '';
+  });
 
   working = working.replace(/@@CODEPLACEHOLDER(\d+)@@/g, (_, indexText) => {
     const index = Number(indexText);

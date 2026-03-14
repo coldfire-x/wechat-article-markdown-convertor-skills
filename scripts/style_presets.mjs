@@ -21,8 +21,8 @@ const STYLE_PRESETS = {
       strong: 'font-weight:bold;color:#000;',
       em: 'font-style:italic;',
       code:
-        'font-family:Menlo,Consolas,monospace;font-size:0.9em;background:rgba(27,31,35,0.05);padding:2px 4px;border-radius:3px;',
-      pre: 'overflow-x:auto;padding:0.8em;margin:1em 6px;border-radius:6px;background:#f7f7f7;line-height:1.6;',
+        'font-family:Menlo,Consolas,monospace;font-size:0.9em;background:rgba(27,31,35,0.05);padding:2px 4px;border-radius:3px;white-space:pre-wrap;word-break:break-word;',
+      pre: 'overflow-x:auto;padding:0.8em;margin:1em 6px;border-radius:6px;background:#f7f7f7;line-height:1.6;white-space:pre-wrap;word-break:break-word;',
       table:
         'border-collapse:collapse;text-align:center;margin:0.8em 6px;color:#3f3f3f;width:calc(100% - 12px);',
       th: 'border:1px solid #dfdfdf;padding:0.4em;background:#f0f0f0;',
@@ -54,8 +54,8 @@ const STYLE_PRESETS = {
       strong: 'font-weight:700;color:#111;',
       em: 'font-style:italic;color:#333;',
       code:
-        'font-family:"SFMono-Regular",Consolas,monospace;font-size:0.9em;background:#f1f1f1;padding:2px 4px;border-radius:2px;',
-      pre: 'overflow-x:auto;padding:0.9em;margin:1em 6px;border-radius:3px;background:#f5f5f5;line-height:1.65;',
+        'font-family:"SFMono-Regular",Consolas,monospace;font-size:0.9em;background:#f1f1f1;padding:2px 4px;border-radius:2px;white-space:pre-wrap;word-break:break-word;',
+      pre: 'overflow-x:auto;padding:0.9em;margin:1em 6px;border-radius:3px;background:#f5f5f5;line-height:1.65;white-space:pre-wrap;word-break:break-word;',
       table:
         'border-collapse:collapse;text-align:left;margin:1em 6px;color:#2f2f2f;width:calc(100% - 12px);',
       th: 'border:1px solid #dadada;padding:0.45em;background:#f4f4f4;font-weight:700;',
@@ -87,8 +87,8 @@ const STYLE_PRESETS = {
       strong: 'font-weight:700;color:#111;',
       em: 'font-style:italic;',
       code:
-        'font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.9em;background:#f2f2f2;padding:2px 4px;border-radius:3px;',
-      pre: 'overflow-x:auto;padding:0.75em;margin:0.9em 6px;border-radius:4px;background:#f6f6f6;line-height:1.6;',
+        'font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.9em;background:#f2f2f2;padding:2px 4px;border-radius:3px;white-space:pre-wrap;word-break:break-word;',
+      pre: 'overflow-x:auto;padding:0.75em;margin:0.9em 6px;border-radius:4px;background:#f6f6f6;line-height:1.6;white-space:pre-wrap;word-break:break-word;',
       table:
         'border-collapse:collapse;text-align:left;margin:0.9em 6px;color:#333;width:calc(100% - 12px);',
       th: 'border:1px solid #e1e1e1;padding:0.4em;background:#f8f8f8;',
@@ -120,8 +120,8 @@ const STYLE_PRESETS = {
       strong: 'font-weight:600;color:#1f2328;',
       em: 'font-style:italic;',
       code:
-        'font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.88em;background:rgba(175,184,193,0.2);padding:0.2em 0.4em;border-radius:6px;',
-      pre: 'overflow-x:auto;padding:1em;margin:0.9em 6px;border-radius:6px;background:#f6f8fa;line-height:1.55;',
+        'font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.88em;background:rgba(175,184,193,0.2);padding:0.2em 0.4em;border-radius:6px;white-space:pre-wrap;word-break:break-word;',
+      pre: 'overflow-x:auto;padding:1em;margin:0.9em 6px;border-radius:6px;background:#f6f8fa;line-height:1.55;white-space:pre-wrap;word-break:break-word;',
       table:
         'border-collapse:collapse;text-align:left;margin:0.9em 6px;color:#24292f;width:calc(100% - 12px);',
       th: 'border:1px solid #d0d7de;padding:0.4em;background:#f6f8fa;font-weight:600;',
